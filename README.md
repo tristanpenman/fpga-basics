@@ -10,6 +10,16 @@ The project under [flashy_lights](./flashy_lights) uses the LEDs on the [LogicSt
 
 The ROM can found in [flashy.coe](./flashy_lights/flashy.coe).
 
+## Segment Counter
+
+The project under [segment_counter](./segment_counter) uses the seven-segment display on the LogicStart MegaWing to display a hexadecimal counter. The segment_counter module uses a 36-bit counter, which is incremented on the rising edge of the clock signal. Bits 35-20 are shown on the seven segment display, with bits 35-28 also mapped onto the LEDs.
+
+Although a video might be more helpful, here is a photo of _Segment Counter_:
+
+[![Photo of Segment Counter](./images/segment_counter_small.jpg)](./images/segment_counter.jpg)
+
+Note that the order of the LEDs is backwards from this perspective. 
+
 ## Simple VGA
 
 The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32Mhz clock signal to 25.125Mhz, which is required to generate a VGA signal.
