@@ -22,7 +22,7 @@ Note that the order of the LEDs is backwards from this perspective.
 
 ## Simple VGA
 
-The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32Mhz clock signal to 25.125Mhz, which is required to generate a VGA signal.
+The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32MHz clock signal to 25.125MHz, which is required to generate a VGA signal.
 
 Here is a photo of _Simple VGA_ in action:
 
