@@ -12,7 +12,7 @@ The ROM can found in [flashy.coe](./flashy_lights/flashy.coe).
 
 ## Simple VGA
 
-The project under [simple_vga](./simple_vga) uses the VGA port on the [LogicStart MegaWing](https://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) to output a checkboard signal. 
+The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32Mhz clock signal to 25.125Mhz, which is required to generate a VGA signal.
 
 Here is a photo of _Simple VGA_ in action:
 

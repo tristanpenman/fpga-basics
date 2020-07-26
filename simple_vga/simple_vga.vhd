@@ -109,4 +109,3 @@ do_vsync: process(clk_out1)
   end process;
 
 end Behavioral;
-
