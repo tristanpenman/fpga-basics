@@ -1,4 +1,4 @@
-# FPGA Projects
+# FPGA Basics
 
 This repo contains a collection of FPGA projects targeting [Papilio Pro](https://papilio.cc/index.php?n=Papilio.PapilioPro) boards, which are based on the [Spartan 6 LX9 FPGA](http://www.xilinx.com/support/documentation/data_sheets/ds160.pdf). The code was written in VHDL using [Xilinx ISE Design Suite 14.7](https://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.html) (WebPACK Edition).
 
@@ -19,6 +19,12 @@ Although a video might be more helpful, here is a photo of _Segment Counter_:
 [![Photo of Segment Counter](./images/segment_counter_small.jpg)](./images/segment_counter.jpg)
 
 Note that the order of the LEDs is backwards from this perspective. 
+
+## Segment Counter with Input
+
+This project is an extension of _Segment Counter_. [segment_counter_input](./segment_counter_input) changes the behaviour of the counter so that it only changes when the joypad is being pushed left or right. When it is pushed to the left, the counter decrements, and when pushed to the right, the counter increments. The counter can be reset by pressing the joypad button for a moment.
+
+The LEDs have also been changed to indicate which input has been registered.
 
 ## Simple VGA
 
