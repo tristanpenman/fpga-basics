@@ -1,0 +1,17 @@
+NET "HSYNC"     LOC = "P97"    | DRIVE = 2;
+NET "VSYNC"     LOC = "P99"    | DRIVE = 2;
+NET "Red<2>"    LOC = "P95"    | DRIVE = 2;
+NET "Red<1>"    LOC = "P74"    | DRIVE = 2;
+NET "Red<0>"    LOC = "P78"    | DRIVE = 2;
+NET "Green<2>"  LOC = "P80"    | DRIVE = 2;
+NET "Green<1>"  LOC = "P82"    | DRIVE = 2;
+NET "Green<0>"  LOC = "P84"    | DRIVE = 2;
+NET "Blue<2>"   LOC = "P87"    | DRIVE = 2;
+NET "Blue<1>"   LOC = "P92"    | DRIVE = 2;
+
+NET JOY_D       LOC="P55"      | IOSTANDARD=LVTTL;
+NET JOY_L       LOC="P57"      | IOSTANDARD=LVTTL;
+NET JOY_R       LOC="P59"      | IOSTANDARD=LVTTL;
+NET JOY_U       LOC="P50"      | IOSTANDARD=LVTTL;
+
+NET clk         LOC = "P94"    | IOSTANDARD=LVCMOS25 | PERIOD=31.25ns;

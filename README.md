@@ -22,17 +22,25 @@ Note that the order of the LEDs is backwards from this perspective.
 
 ## Segment Counter with Input
 
-This project is an extension of _Segment Counter_. [segment_counter_input](./segment_counter_input) changes the behaviour of the counter so that it only changes when the joypad is being pushed left or right. When it is pushed to the left, the counter decrements, and when pushed to the right, the counter increments. The counter can be reset by pressing the joypad button for a moment.
+This project is an extension of _Segment Counter_. [segment_counter_input](./segment_counter_input) changes the behaviour of the counter so that it only changes when the joystick is being pushed left or right. When it is pushed to the left, the counter decrements, and when pushed to the right, the counter increments. The counter can be reset by pressing the joystick button for a moment.
 
 The LEDs have also been changed to indicate which input has been registered.
 
 ## Simple VGA
 
-The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32MHz clock signal to 25.125MHz, which is required to generate a VGA signal.
+The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart MegaWing to output a checkboard signal. Probably the most interesting part of this project is that it uses a Clock Divider IP Core to convert the board's 32MHz clock signal to 25.125MHz, which is required to generate a 640x480 VGA signal.
 
 Here is a photo of _Simple VGA_ in action:
 
 [![Photo of Simple VGA in action](./images/simple_vga_small.jpg)](./images/simple_vga.jpg)
+
+## VGA Crosshair
+
+Building on _Simple VGA_, the [vga_crosshair](./vga_crosshair) project displays two intersecting lines. The crosshair, or point of intersection, can be moved using the joystick. Movement is performed on the rising edge of the VSYNC signal, to avoid tearing.
+
+90% of the way towards a playable first-person shooter, right?
+
+[![Photo of VGA Crosshair in action](./images/vga_crosshair_small.jpg)](./images/vga_crosshair.jpg)
 
 ## References
 
