@@ -16,7 +16,7 @@ The project under [segment_counter](./segment_counter) uses the seven-segment di
 
 Although a video might be more helpful, here is a photo of _Segment Counter_:
 
-[![Photo of Segment Counter](./images/segment_counter_small.jpg)](./images/segment_counter.jpg)
+[![Photo of Segment Counter](./content/segment_counter_small.jpg)](./content/segment_counter.jpg)
 
 Note that the order of the LEDs is backwards from this perspective. 
 
@@ -32,7 +32,7 @@ The project under [simple_vga](./simple_vga) uses the VGA port on the LogicStart
 
 Here is a photo of _Simple VGA_ in action:
 
-[![Photo of Simple VGA in action](./images/simple_vga_small.jpg)](./images/simple_vga.jpg)
+[![Photo of Simple VGA in action](./content/simple_vga_small.jpg)](./content/simple_vga.jpg)
 
 ## VGA Crosshair
 
@@ -40,7 +40,7 @@ Building on _Simple VGA_, the [vga_crosshair](./vga_crosshair) project displays 
 
 90% of the way towards a playable first-person shooter, right?
 
-[![Photo of VGA Crosshair in action](./images/vga_crosshair_small.jpg)](./images/vga_crosshair.jpg)
+[![Photo of VGA Crosshair in action](./content/vga_crosshair_small.jpg)](./content/vga_crosshair.jpg)
 
 ## References
 
