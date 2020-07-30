@@ -4,12 +4,13 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity segment_counter is
-    Port ( anodes : out STD_LOGIC_VECTOR (3 downto 0);
-           segs   : out STD_LOGIC_VECTOR (6 downto 0);
-			  LED    : out STD_LOGIC_VECTOR (7 downto 0);
-           dp     : out STD_LOGIC;
-           clk    : in  STD_LOGIC
-         );
+  Port (
+    anodes : out STD_LOGIC_VECTOR (3 downto 0);
+    segs   : out STD_LOGIC_VECTOR (6 downto 0);
+    LED    : out STD_LOGIC_VECTOR (7 downto 0);
+    dp     : out STD_LOGIC;
+    clk    : in  STD_LOGIC
+  );
 end segment_counter;
 
 architecture Behavioral of segment_counter is
@@ -23,31 +24,31 @@ begin
     if rising_edge(clk) then
       counter <= counter + 1;
 
-		-- Show the high order byte on the LEDs
-		LED <= counter(35 downto 28);
+      -- Show the high order byte on the LEDs
+      LED <= counter(35 downto 28);
 
       case counter(15 downto 14) is
-		  -- First two cases cover the low order byte
+        -- First two cases cover the low order byte
         when "00" =>
           anodes <= "1110";
           digit <= counter(23 downto 20);
-        when "01" => 
+        when "01" =>
           anodes <= "1101";
           digit <= counter(27 downto 24);
-		  -- Next two cases cover the high order byte
-        when "10" => 
+        -- Next two cases cover the high order byte
+        when "10" =>
           anodes <= "1011";
           digit <= counter(31 downto 28);
         when "11" =>
           anodes <= "0111";
           digit <= counter(35 downto 32);
-		  -- This should never happen
+        -- This should never happen
         when others =>
           anodes <= "1111";
           digit <= "ZZZZ";
       end case;
-		
-		-- Map the current digit to the seven segment display
+
+      -- Map the current digit to the seven segment display
       case digit is
         when "0000" => segs <= "1000000";
         when "0001" => segs <= "1111001";

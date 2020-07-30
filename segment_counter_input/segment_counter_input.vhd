@@ -40,7 +40,7 @@ begin
     if rising_edge(clk) then
       if NOT(JOY_R = '1') AND JOY_L = '1' then
         direction <= "10";
-      elsif NOT(JOY_L = '1') AND JOY_R = '1' then 
+      elsif NOT(JOY_L = '1') AND JOY_R = '1' then
         direction <= "01";
       else
         direction <= "00";
@@ -53,7 +53,7 @@ begin
       end if;
     end if;
   end process;
-  
+
   increment_counters: process(clk)
   begin
     if rising_edge(clk) then
@@ -70,7 +70,7 @@ begin
           counter_a <= counter_a;
         end case;
       end if;
-      
+
       counter_b <= counter_b + 1;
     end if;
   end process;
@@ -82,11 +82,11 @@ begin
       when "00" =>
         anodes <= "1110";
         digit <= counter_a(23 downto 20);
-      when "01" => 
+      when "01" =>
         anodes <= "1101";
         digit <= counter_a(27 downto 24);
       -- Next two cases cover the high order byte
-      when "10" => 
+      when "10" =>
         anodes <= "1011";
         digit <= counter_a(31 downto 28);
       when others =>
@@ -94,7 +94,7 @@ begin
         digit <= counter_a(35 downto 32);
     end case;
   end process;
-    
+
   update_segments: process(digit)
   begin
     -- Map the current digit to the seven segment display
