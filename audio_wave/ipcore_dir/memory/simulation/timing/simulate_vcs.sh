@@ -45,7 +45,6 @@
 # PART OF THIS FILE AT ALL TIMES.
 #--------------------------------------------------------------------------------
 #!/bin/sh
-cp ../../../memory.mif .
 
 rm -rf simv* csrc DVEfiles AN.DB
 

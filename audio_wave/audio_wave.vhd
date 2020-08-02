@@ -21,37 +21,20 @@ architecture Behavioral of audio_wave is
 
   component memory
     port (
-      clka  : IN STD_LOGIC;
-      addra : IN STD_LOGIC_VECTOR(9 DOWNTO 0);
-      douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+      clka  : in  STD_LOGIC;
+      addra : in  STD_LOGIC_VECTOR(9 downto 0);
+      douta : out STD_LOGIC_VECTOR(7 downto 0)
     );
   end component;
 
   -- used to choose which value from memory to send to the DAC
   signal addr    : STD_LOGIC_VECTOR(9 downto 0);
-  signal counter : STD_LOGIC_VECTOR(29 downto 0);
+  signal counter : STD_LOGIC_VECTOR(15 downto 0);
 
   -- the current value retrieved from memory
   signal data    : STD_LOGIC_VECTOR(7 downto 0);
 
 begin
-
-  dac: dac8
-    port map (
-      clk => counter(15),
-      data => data,
-      pulse => AUDIO
-    );
-
-  sine: memory
-    port map (
-      clka => clk,
-      addra => addr,
-      douta => data
-    );
-
-  -- use highest 10 bits of counter to choose memory address
-  addr <= counter(15 downto 6);
 
   process(clk)
   begin
@@ -59,5 +42,23 @@ begin
       counter <= counter + 1;
     end if;
   end process;
+
+  -- use highest 10 bits of counter to choose memory address
+  addr <= counter(15 downto 6);
+
+  sine: memory
+    port map (
+      clka => counter(6),
+      addra => addr,
+      douta => data
+    );
+
+  -- feed result to the dac
+  dac: dac8
+    port map (
+      clk => clk,
+      data => data,
+      pulse => AUDIO
+    );
 
 end Behavioral;

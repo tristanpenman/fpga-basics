@@ -107,7 +107,7 @@ utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simul
 utilities_xmdf::xmdfSetData $instance FileSet $fcount type Ignore
 incr fcount
 
-utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simulation/functional/simulate_isim.bat
+utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simulation/functional/simulate_isim.sh
 utilities_xmdf::xmdfSetData $instance FileSet $fcount type Ignore
 incr fcount
 
@@ -163,7 +163,7 @@ utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simul
 utilities_xmdf::xmdfSetData $instance FileSet $fcount type Ignore
 incr fcount
 
-utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simulation/timing/simulate_isim.bat
+utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory/simulation/timing/simulate_isim.sh
 utilities_xmdf::xmdfSetData $instance FileSet $fcount type Ignore
 incr fcount
 
@@ -205,10 +205,6 @@ incr fcount
 
 utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory.asy
 utilities_xmdf::xmdfSetData $instance FileSet $fcount type asy
-incr fcount
-
-utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory.mif
-utilities_xmdf::xmdfSetData $instance FileSet $fcount type AnyView
 incr fcount
 
 utilities_xmdf::xmdfSetData $instance FileSet $fcount relative_path memory.ngc
