@@ -42,6 +42,12 @@ Building on _Simple VGA_, the [vga_crosshair](./vga_crosshair) project displays 
 
 [![Photo of VGA Crosshair in action](./content/vga_crosshair_small.jpg)](./content/vga_crosshair.jpg)
 
+## Audio Wave
+
+The project under [audio_wave](./audio_wave) uses the 3.5mm audio jack on the LogicStart MegaWing to output audio, using a sine wave stored in Block RAM. The sine wave data is stored in [sine.coe](./audio_wave/sine.coe), and contains 1024 8-bit values. The main module relies on a module called [dac8](./audio_wave/dac8.vhd), which implements a Delta-Sigma DAC as per [Xilinx App Note 154](https://www.xilinx.com/support/documentation/application_notes/xapp154.pdf).
+
+A small C program has also been included, for generating sine wave data. This can be found in [sine.c](./audio_wave/sine.c).
+
 ## References
 
 * [Free-Range VHDL](http://freerangefactory.org/pdf/df344hdh4h8kjfh3500ft2/free_range_vhdl.pdf) from [Free Range Factory](http://freerangefactory.org)

@@ -1,0 +1,3 @@
+NET AUDIO       LOC = "P62"    | IOSTANDARD=LVTTL;
+
+NET clk         LOC = "P94"    | IOSTANDARD=LVTTL | PERIOD=31.25ns;
