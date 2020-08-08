@@ -46,6 +46,7 @@
 # PART OF THIS FILE AT ALL TIMES.
 #--------------------------------------------------------------------------------
 
+cp ../../../memory.mif .
 
 
 echo "Compiling Core VHDL UNISIM/Behavioral model"

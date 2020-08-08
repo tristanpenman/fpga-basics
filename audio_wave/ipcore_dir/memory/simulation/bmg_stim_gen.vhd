@@ -286,8 +286,8 @@ impure FUNCTION init_memory( C_USE_DEFAULT_DATA : INTEGER;
   --***************************************************************
 
 constant c_init : mem_type := init_memory(0,
-                                          0,
-										  "no_coe_file_loaded",
+                                          1,
+										  "memory.mif",
                                            DEFAULT_DATA,
                                           8,
                                           1024);
