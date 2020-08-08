@@ -48,6 +48,16 @@ The project under [audio_wave](./audio_wave) uses the 3.5mm audio jack on the Lo
 
 A small C program has also been included, for generating sine wave data. This can be found in [sine.c](./audio_wave/sine.c).
 
+The tone that is played is approximately 488hz. The clock is ~32mhz, and we use the highest 10 bits of a 16 bit counter to choose which sample to read from memory. So 32,000,000 / 2^6 = 500,000 samples per second. We have 1024 samples, and frequency is the number of times we can play all of those samples per second. In this case it is 500,000 / 1024 = 488.28125.
+
+It sounds like [this](https://www.youtube.com/watch?v=E3Mmov-nYok).
+
+## Volume Control
+
+This project builds on _Audio Wave_ by adding a volume control, with 16 levels of volume. It does this using a multiplier IP block which multiplies a 4-bit volume signal with the sample that is currently being played. The lowest 4 bits of the product are discarded, and the highest 8 bits are played.
+
+The volume can be controlled using the joystick on the MegaWing, and is displayed as a hexadecimal value on the seven segment display.
+
 ## References
 
 * [Free-Range VHDL](http://freerangefactory.org/pdf/df344hdh4h8kjfh3500ft2/free_range_vhdl.pdf) from [Free Range Factory](http://freerangefactory.org)
