@@ -54,9 +54,13 @@ It sounds like [this](https://www.youtube.com/watch?v=E3Mmov-nYok).
 
 ## Volume Control
 
-This project builds on _Audio Wave_ by adding a volume control, with 16 levels of volume. It does this using a multiplier IP block which multiplies a 4-bit volume signal with the sample that is currently being played. The lowest 4 bits of the product are discarded, and the highest 8 bits are played.
+[volume_control](./volume_control) builds on _Audio Wave_ by adding a volume control, with 16 levels of volume. It does this using a multiplier IP block which multiplies a 4-bit volume signal with the sample that is currently being played. The lowest 4 bits of the product are discarded, and the highest 8 bits are played.
 
 The volume can be controlled using the joystick on the MegaWing, and is displayed as a hexadecimal value on the seven segment display.
+
+## Volume Control 16
+
+[volume_control](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c). 
 
 ## References
 

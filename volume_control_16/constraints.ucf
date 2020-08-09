@@ -1,0 +1,19 @@
+NET AUDIO       LOC = "P62"    | IOSTANDARD=LVTTL;
+
+NET JOY_L       LOC = "P57"    | IOSTANDARD=LVTTL;
+NET JOY_R       LOC = "P59"    | IOSTANDARD=LVTTL;
+
+NET "anodes<0>" LOC = "P48"    | IOSTANDARD=LVTTL;
+NET "anodes<1>" LOC = "P56"    | IOSTANDARD=LVTTL;
+NET "anodes<2>" LOC = "P79"    | IOSTANDARD=LVTTL;
+NET "anodes<3>" LOC = "P85"    | IOSTANDARD=LVTTL;
+
+NET "segs<6>"   LOC = "P81"    | IOSTANDARD=LVTTL;
+NET "segs<5>"   LOC = "P61"    | IOSTANDARD=LVTTL;
+NET "segs<4>"   LOC = "P58"    | IOSTANDARD=LVTTL;
+NET "segs<3>"   LOC = "P67"    | IOSTANDARD=LVTTL;
+NET "segs<2>"   LOC = "P66"    | IOSTANDARD=LVTTL;
+NET "segs<1>"   LOC = "P83"    | IOSTANDARD=LVTTL;
+NET "segs<0>"   LOC = "P75"    | IOSTANDARD=LVTTL;
+
+NET clk         LOC = "P94"    | IOSTANDARD=LVTTL | PERIOD=31.25ns;
