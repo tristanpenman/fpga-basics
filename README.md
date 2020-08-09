@@ -60,7 +60,7 @@ The volume can be controlled using the joystick on the MegaWing, and is displaye
 
 ## Volume Control 16
 
-[volume_control](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c). 
+[volume_control_16](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c). 
 
 ## References
 
