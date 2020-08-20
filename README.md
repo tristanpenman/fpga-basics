@@ -64,7 +64,7 @@ The volume can be controlled using the joystick on the MegaWing, and is displaye
 
 ## Gamepad Test
 
-I finally got my hands on an [Arcade MegaWing](http://papilio.cc/index.php?n=Papilio.ArcadeMegaWing). This improves on the LogicWing by adding support for 4096-colour VGA, as well as various inputs. [gamepad_test](./gamepad_test) builds upon the _VGA Crosshair_ example, adding support for a Sega Mega Drive gamepad. It also makes the necessary adjustments to work with the updated VGA output.
+I finally got my hands on an [Arcade MegaWing](http://papilio.cc/index.php?n=Papilio.ArcadeMegaWing). This improves on the standard MegaWing by adding support for 4096-colour VGA, as well as various inputs. [gamepad_test](./gamepad_test) builds upon the _VGA Crosshair_ example, adding support for a Sega Mega Drive gamepad. It also makes the necessary adjustments to work with the updated VGA output.
 
 Here it is in action:
 
