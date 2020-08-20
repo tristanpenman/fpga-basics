@@ -62,6 +62,16 @@ The volume can be controlled using the joystick on the MegaWing, and is displaye
 
 [volume_control_16](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c). 
 
+## Gamepad Test
+
+I finally got my hands on an [Arcade MegaWing](http://papilio.cc/index.php?n=Papilio.ArcadeMegaWing). This improves on the LogicWing by adding support for 4096-colour VGA, as well as various inputs. [gamepad_test](./gamepad_test) builds upon the _VGA Crosshair_ example, adding support for a Sega Mega Drive gamepad. It also makes the necessary adjustments to work with the updated VGA output.
+
+Here it is in action:
+
+[![Gamepad Test in action](./content/gamepad_test_small.jpg)](./content/gamepad_test.jpg)
+
+Input/output pins were be updated to match the new wing, and wiring for a ground pin was added for the controller.
+
 ## References
 
 * [Free-Range VHDL](http://freerangefactory.org/pdf/df344hdh4h8kjfh3500ft2/free_range_vhdl.pdf) from [Free Range Factory](http://freerangefactory.org)
