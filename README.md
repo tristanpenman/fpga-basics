@@ -2,14 +2,14 @@
 
 This repo contains a collection of FPGA projects targeting [Papilio Pro](https://papilio.cc/index.php?n=Papilio.PapilioPro) boards, which are based on the [Spartan 6 LX9 FPGA](http://www.xilinx.com/support/documentation/data_sheets/ds160.pdf). The code was written in VHDL using [Xilinx ISE Design Suite 14.7](https://www.xilinx.com/products/design-tools/ise-design-suite/ise-webpack.html) (WebPACK Edition).
 
-These projects are mostly based on [Introducing the Spartan 3E FPGA and VHDL](https://cdn.sparkfun.com/datasheets/Dev/FPGA/IntroToSpartanFPGABook.pdf) from [SparkFun](https://www.sparkfun.com/).
+These projects are mostly based on [Introducing the Spartan 3E FPGA and VHDL](https://cdn.sparkfun.com/datasheets/Dev/FPGA/IntroToSpartanFPGABook.pdf) from [SparkFun](https://www.sparkfun.com/). Projects are listed in chronological order, based on when I completed them.
 
 ## Flashy Lights
 
 The project under [flashy_lights](./flashy_lights) uses the LEDs on the [LogicStart MegaWing](https://papilio.cc/index.php?n=Papilio.LogicStartMegaWing) to display a sequence of patterns that are read from block RAM (configured as a single port ROM). It uses a simple counter to loop over addresses in the ROM. At each address a pattern of eight bits determines which LEDs are switched on.
 
 The ROM can found in [flashy.coe](./flashy_lights/flashy.coe).
-
+c
 ## Segment Counter
 
 The project under [segment_counter](./segment_counter) uses the seven-segment display on the LogicStart MegaWing to display a hexadecimal counter. The segment_counter module uses a 36-bit counter, which is incremented on the rising edge of the clock signal. Bits 35-20 are shown on the seven segment display, with bits 35-28 also mapped onto the LEDs.
@@ -71,6 +71,18 @@ Here it is in action:
 [![Gamepad Test in action](./content/gamepad_test_small.jpg)](./content/gamepad_test.jpg)
 
 Input/output pins were be updated to match the new wing, and wiring for a ground pin was added for the controller.
+
+## Bitmap Display ##
+
+This example builds on _Simple VGA_ by allowing a small bitmap/sprite to be drawn from Block RAM. The image to be drawn is in [dither.coe](./bitmap_display/dither.coe), and a program for generating the COE file can be found in [dither.c](./bitmap_display/dither.c).
+
+It's difficult to tell from the photo that this is a pure bitmap image (i.e. ones and zeros), so the darker triangles are actually dithered:
+
+[![Bitmap Display](./content/bitmap_display_small.jpg)](./content/bitmap_display.jpg)
+
+This turned out to be more sensitive to timing than I expected. The bitmap is read from Block RAM one row at a time, and it was necessary to update the read address earlier enough to ensure that the output would be available in time to be drawn. Failing to do this caused pixel alignment issues.
+
+The next challenge is full colour support...
 
 ## References
 
