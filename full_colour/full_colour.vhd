@@ -15,15 +15,24 @@ entity full_colour is
 end full_colour;
 
 architecture Behavioral of full_colour is
-  signal hcounter : STD_LOGIC_VECTOR(9 downto 0);
-  signal vcounter : STD_LOGIC_VECTOR(9 downto 0);
-  signal vaddr    : STD_LOGIC_VECTOR(11 downto 0);
-  signal vdata    : STD_LOGIC_VECTOR(11 downto 0);
-  
-  signal hpos     : STD_LOGIC_VECTOR(9 downto 0) := (others => '0');
-  signal hdir     : STD_LOGIC := '1';
-  signal vpos     : STD_LOGIC_VECTOR(9 downto 0) := (others => '0');
-  signal vdir     : STD_LOGIC := '1';
+  signal hcounter : STD_LOGIC_VECTOR(11 downto 0);
+  signal vcounter : STD_LOGIC_VECTOR(11 downto 0);
+
+  signal vaddr1   : STD_LOGIC_VECTOR(11 downto 0);
+  signal vdata1   : STD_LOGIC_VECTOR(11 downto 0);
+
+  signal hpos1    : STD_LOGIC_VECTOR(9 downto 0) := "0000000100";
+  signal hdir1    : STD_LOGIC;
+  signal vpos1    : STD_LOGIC_VECTOR(9 downto 0) := "0000000100";
+  signal vdir1    : STD_LOGIC;
+
+  signal vaddr2   : STD_LOGIC_VECTOR(11 downto 0);
+  signal vdata2   : STD_LOGIC_VECTOR(11 downto 0);
+
+  signal hpos2    : STD_LOGIC_VECTOR(9 downto 0) := "0000100100";
+  signal hdir2    : STD_LOGIC;
+  signal vpos2    : STD_LOGIC_VECTOR(9 downto 0) := "0010110100";
+  signal vdir2    : STD_LOGIC;
 
   signal clk_out1 : STD_LOGIC;
 
@@ -39,9 +48,12 @@ architecture Behavioral of full_colour is
 
   COMPONENT bitmap IS
   PORT (
-    ADDRA : in  STD_LOGIC_VECTOR(11 downto 0);
-    DOUTA : out STD_LOGIC_VECTOR(11 downto 0);
-    CLKA  : in  STD_LOGIC
+    CLKA  : IN STD_LOGIC;
+    ADDRA : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    DOUTA : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    CLKB  : IN STD_LOGIC;
+    ADDRB : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    DOUTB : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
   );
   end component;
 
@@ -57,8 +69,11 @@ begin
   bm : bitmap
   port map(
     CLKA => clk_out1,
-    ADDRA => vaddr,
-    DOUTA => vdata
+    ADDRA => vaddr1,
+    DOUTA => vdata1,
+    CLKB => clk_out1,
+    ADDRB => vaddr2,
+    DOUTB => vdata2
   );
 
   clock : clock_divider
@@ -83,35 +98,34 @@ begin
     end if;
   end process;
 
-  do_load_data: process(clk_out1) 
+  do_load_data: process(hcounter, vcounter, vpos1, vpos2, hpos1, hpos2)
   begin
-    if rising_edge(clk_out1) then
-      if vcounter >= vpos and vcounter < 64 + vpos then
-        if hcounter >= hpos and hcounter < 64 + hpos then
-          vaddr <= vaddr + 1;
-        end if;
-      else
-        vaddr <= (others => '0');
-      end if;
-    end if;
+    vaddr1 <= hcounter - hpos1 + 1 + std_logic_vector(shift_left(unsigned(vcounter - vpos1), 6));
+    vaddr2 <= hcounter - hpos2 + 1 + std_logic_vector(shift_left(unsigned(vcounter - vpos2), 6));
   end process;
 
-  do_rgb: process(hcounter, vcounter, vdata, hpos, vpos)
+  do_rgb: process(clk_out1)
   begin
-    if hcounter < ht_vis and vcounter < vt_vis then
-      if hcounter >= hpos and hcounter < 64 + hpos and vcounter >= vpos and vcounter < 64 + vpos then
-        Red(3 downto 0) <= vdata(11 downto 8);
-        Green(3 downto 0) <= vdata(7 downto 4);
-        Blue(3 downto 0) <= vdata(3 downto 0);
+    if rising_edge(clk_out1) then
+      if hcounter < ht_vis and vcounter < vt_vis then
+        if hcounter >= hpos1 and hcounter < 64 + hpos1 and vcounter >= vpos1 and vcounter < 64 + vpos1 then
+          Red(3 downto 0) <= vdata1(11 downto 8);
+          Green(3 downto 0) <= vdata1(7 downto 4);
+          Blue(3 downto 0) <= vdata1(3 downto 0);
+        elsif hcounter >= hpos2 and hcounter < 64 + hpos2 and vcounter >= vpos2 and vcounter < 64 + vpos2 then
+          Red(3 downto 0) <= vdata2(11 downto 8);
+          Green(3 downto 0) <= vdata2(7 downto 4);
+          Blue(3 downto 0) <= vdata2(3 downto 0);
+        else
+          Red(3 downto 0) <= "1111";
+          Green(3 downto 0) <= "1111";
+          Blue(3 downto 0) <= "1111";
+        end if;
       else
-        Red(3 downto 0) <= "1111";
-        Green(3 downto 0) <= "1111";
-        Blue(3 downto 0) <= "1111";
+        Red(3 downto 0) <= "0000";
+        Green(3 downto 0) <= "0000";
+        Blue(3 downto 0) <= "0000";
       end if;
-    else
-      Red(3 downto 0) <= "0000";
-      Green(3 downto 0) <= "0000";
-      Blue(3 downto 0) <= "0000";
     end if;
   end process;
 
@@ -137,19 +151,33 @@ begin
     end if;
   end process;
 
-  do_movement: process(VSYNC)
+  do_movement: process(clk_out1)
   begin
-    if rising_edge(VSYNC) then
-      if hdir = '1' then
-        hpos <= hpos + 1;
-      else
-        hpos <= hpos - 1;
-      end if;
-      
-      if vdir = '1' then
-        vpos <= vpos + 1;
-      else
-        vpos <= vpos - 1;
+    if rising_edge(clk_out1) then
+      if (vcounter = vt_vis and hcounter = 0) then
+        if hdir1 = '1' then
+          hpos1 <= hpos1 + 1;
+        else
+          hpos1 <= hpos1 - 1;
+        end if;
+
+        if vdir1 = '1' then
+          vpos1 <= vpos1 + 1;
+        else
+          vpos1 <= vpos1 - 1;
+        end if;
+
+        if hdir2 = '1' then
+          hpos2 <= hpos2 + 1;
+        else
+          hpos2 <= hpos2 - 1;
+        end if;
+
+        if vdir2 = '1' then
+          vpos2 <= vpos2 + 1;
+        else
+          vpos2 <= vpos2 - 1;
+        end if;
       end if;
     end if;
   end process;
@@ -157,16 +185,28 @@ begin
   do_bounds_check: process(clk_out1)
   begin
     if rising_edge(clk_out1) then
-      if hpos = ht_vis - 64 then
-        hdir <= '0';
-      elsif hpos = 0 then
-        hdir <= '1';
+      if hpos1 = ht_vis - 64 then
+        hdir1 <= '0';
+      elsif hpos1 = 0 then
+        hdir1 <= '1';
       end if;
-      
-      if vpos = vt_vis - 64 then
-        vdir <= '0';
-      elsif vpos = 0 then
-        vdir <= '1';
+
+      if vpos1 = vt_vis - 64 then
+        vdir1 <= '0';
+      elsif vpos1 = 0 then
+        vdir1 <= '1';
+      end if;
+
+      if hpos2 = ht_vis - 64 then
+        hdir2 <= '0';
+      elsif hpos2 = 0 then
+        hdir2 <= '1';
+      end if;
+
+      if vpos2 = vt_vis - 64 then
+        vdir2 <= '0';
+      elsif vpos2 = 0 then
+        vdir2 <= '1';
       end if;
     end if;
   end process;

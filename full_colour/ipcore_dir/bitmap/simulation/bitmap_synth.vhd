@@ -97,6 +97,7 @@ GENERIC (
    );
 PORT(
 	CLK_IN     : IN  STD_LOGIC;
+	CLKB_IN     : IN  STD_LOGIC;
     RESET_IN   : IN  STD_LOGIC;
     STATUS     : OUT STD_LOGIC_VECTOR(8 DOWNTO 0) := (OTHERS => '0')   --ERROR STATUS OUT OF FPGA
     );
@@ -110,8 +111,12 @@ COMPONENT bitmap_exdes
       --Inputs - Port A
     ADDRA          : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
     DOUTA          : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
-    CLKA       : IN STD_LOGIC
+    CLKA       : IN STD_LOGIC;
 
+      --Inputs - Port B
+    ADDRB          : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    DOUTB          : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    CLKB           : IN STD_LOGIC
 
   );
 
@@ -123,6 +128,11 @@ END COMPONENT;
   SIGNAL ADDRA: STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
   SIGNAL ADDRA_R: STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
   SIGNAL DOUTA: STD_LOGIC_VECTOR(11 DOWNTO 0);
+  SIGNAL CLKB: STD_LOGIC := '0';
+  SIGNAL RSTB: STD_LOGIC := '0';
+  SIGNAL ADDRB: STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
+  SIGNAL ADDRB_R: STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
+  SIGNAL DOUTB: STD_LOGIC_VECTOR(11 DOWNTO 0);
   SIGNAL CHECKER_EN : STD_LOGIC:='0';
   SIGNAL CHECKER_EN_R : STD_LOGIC:='0';
   SIGNAL STIMULUS_FLOW : STD_LOGIC_VECTOR(22 DOWNTO 0) := (OTHERS =>'0');
@@ -132,6 +142,10 @@ END COMPONENT;
   SIGNAL RESET_SYNC_R2 : STD_LOGIC:='1';
   SIGNAL RESET_SYNC_R3 : STD_LOGIC:='1';
 
+  SIGNAL clkb_in_i: STD_LOGIC;
+  SIGNAL RESETB_SYNC_R1 : STD_LOGIC := '1';
+  SIGNAL RESETB_SYNC_R2 : STD_LOGIC := '1';
+  SIGNAL RESETB_SYNC_R3 : STD_LOGIC := '1';
   SIGNAL ITER_R0 : STD_LOGIC := '0';
   SIGNAL ITER_R1 : STD_LOGIC := '0';
   SIGNAL ITER_R2 : STD_LOGIC := '0';
@@ -149,6 +163,13 @@ END COMPONENT;
    clk_in_i <= CLK_IN;
    CLKA <= clk_in_i;
 
+--  clkb_buf: bufg
+--    PORT map(
+--      i => CLKB_IN,
+--      o => clkb_in_i
+--    );
+   clkb_in_i <= CLKB_IN;
+   CLKB <= clkb_in_i;
    RSTA <= RESET_SYNC_R3 AFTER 50 ns;
 
 
@@ -161,6 +182,16 @@ END COMPONENT;
 	  END IF;
    END PROCESS;
 
+   RSTB <= RESETB_SYNC_R3 AFTER 50 ns;
+
+   PROCESS(clkb_in_i)
+   BEGIN
+      IF(RISING_EDGE(clkb_in_i)) THEN
+		 RESETB_SYNC_R1 <= RESET_IN;
+		 RESETB_SYNC_R2 <= RESETB_SYNC_R1;
+		 RESETB_SYNC_R3 <= RESETB_SYNC_R2;
+	  END IF;
+   END PROCESS;
 
 PROCESS(CLKA)
 BEGIN
@@ -179,16 +210,19 @@ STATUS(7 DOWNTO 0) <= ISSUE_FLAG_STATUS;
 
 
 
- BMG_STIM_GEN_INST:ENTITY work.BMG_STIM_GEN
+    BMG_STIM_GEN_INST:ENTITY work.BMG_STIM_GEN
     GENERIC MAP(  C_ROM_SYNTH => C_ROM_SYNTH
               )
 
      PORT MAP(
-                CLK => clk_in_i,
-            	RST => RSTA,
+                CLKA => clk_in_i,
+                CLKB => clkb_in_i,
+                TB_RST => RSTA,
                 ADDRA  => ADDRA,
-				DATA_IN => DOUTA,
-				STATUS => ISSUE_FLAG(0)
+                ADDRB  => ADDRB,
+				DATA_IN_A => DOUTA,
+				DATA_IN_B => DOUTB,
+				STATUS => ISSUE_FLAG(1 downto 0)
              );
 
       PROCESS(CLKA)
@@ -208,6 +242,7 @@ STATUS(7 DOWNTO 0) <= ISSUE_FLAG_STATUS;
 	    END IF;
       END PROCESS;
 
+
       PROCESS(CLKA)
       BEGIN
         IF(RISING_EDGE(CLKA)) THEN
@@ -218,6 +253,7 @@ STATUS(7 DOWNTO 0) <= ISSUE_FLAG_STATUS;
          END IF;
 	    END IF;
       END PROCESS;
+
 
 
       PROCESS(CLKA)
@@ -238,8 +274,10 @@ STATUS(7 DOWNTO 0) <= ISSUE_FLAG_STATUS;
         IF(RISING_EDGE(CLKA)) THEN
 		  IF(RESET_SYNC_R3='1') THEN
             ADDRA_R <= (OTHERS=> '0') AFTER 50 ns;
+            ADDRB_R <= (OTHERS=> '0') AFTER 50 ns;
           ELSE
             ADDRA_R <= ADDRA AFTER 50 ns;
+            ADDRB_R <= ADDRB AFTER 50 ns;
           END IF;
 	    END IF;
       END PROCESS;
@@ -249,7 +287,11 @@ STATUS(7 DOWNTO 0) <= ISSUE_FLAG_STATUS;
       --Port A
       ADDRA      => ADDRA_R,
       DOUTA      => DOUTA,
-      CLKA       => CLKA
+      CLKA       => CLKA,
+      --Port B
+      ADDRB      => ADDRB_R,
+      DOUTB      => DOUTB,
+      CLKB       => CLKB
 
     );
 END ARCHITECTURE;

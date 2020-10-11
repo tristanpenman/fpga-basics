@@ -79,6 +79,7 @@ END ENTITY;
 ARCHITECTURE bitmap_tb_ARCH OF bitmap_tb IS
  SIGNAL  STATUS : STD_LOGIC_VECTOR(8 DOWNTO 0);
  SIGNAL  CLK :  STD_LOGIC := '1';
+ SIGNAL  CLKB :  STD_LOGIC := '1';
  SIGNAL  RESET : STD_LOGIC;
  
  BEGIN
@@ -88,6 +89,12 @@ ARCHITECTURE bitmap_tb_ARCH OF bitmap_tb IS
      CLK <= NOT CLK;
      WAIT FOR 100 NS;
      CLK <= NOT CLK; 
+     WAIT FOR 100 NS;
+  END PROCESS;
+ CLKB_GEN: PROCESS BEGIN
+     CLKB <= NOT CLKB;
+     WAIT FOR 100 NS;
+     CLKB <= NOT CLKB; 
      WAIT FOR 100 NS;
   END PROCESS;
   
@@ -128,6 +135,7 @@ END PROCESS;
   GENERIC MAP (C_ROM_SYNTH => 0)
   PORT MAP(
            CLK_IN   => CLK,
+           CLKB_IN   => CLK,
      	   RESET_IN => RESET,
            STATUS   => STATUS
 	  );

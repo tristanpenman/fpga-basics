@@ -44,7 +44,10 @@ ENTITY bitmap IS
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
+    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    clkb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
   );
 END bitmap;
 
@@ -54,7 +57,10 @@ COMPONENT wrapped_bitmap
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
+    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    clkb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
   );
 END COMPONENT;
 
@@ -94,7 +100,7 @@ END COMPONENT;
       c_initb_val => "0",
       c_interface_type => 0,
       c_load_init_file => 1,
-      c_mem_type => 3,
+      c_mem_type => 4,
       c_mux_pipeline_stages => 0,
       c_prim_type => 1,
       c_read_depth_a => 4096,
@@ -130,7 +136,10 @@ U0 : wrapped_bitmap
   PORT MAP (
     clka => clka,
     addra => addra,
-    douta => douta
+    douta => douta,
+    clkb => clkb,
+    addrb => addrb,
+    doutb => doutb
   );
 -- synthesis translate_on
 

@@ -49,7 +49,10 @@ COMPONENT bitmap
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
+    douta : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    clkb : IN STD_LOGIC;
+    addrb : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    doutb : OUT STD_LOGIC_VECTOR(11 DOWNTO 0)
   );
 END COMPONENT;
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
@@ -62,7 +65,10 @@ your_instance_name : bitmap
   PORT MAP (
     clka => clka,
     addra => addra,
-    douta => douta
+    douta => douta,
+    clkb => clkb,
+    addrb => addrb,
+    doutb => doutb
   );
 -- INST_TAG_END ------ End INSTANTIATION Template ------------
 

@@ -86,11 +86,13 @@ The next challenge is full colour support...
 
 ## Full Colour ##
 
-The [full_colour](./full_colour) project takes advantage of the 4096-bit colour output of the Arcade MegaWing. Like the _Bitmap Display_ project, it draws a small sprite from Block RAM. However, there are two changes to how it is drawn. The first is that the data is stored per-pixel, rather than per-row. The second is that each pixel contains 12 bits of colour data (4 bits per channel). The image to be drawn is in [gradient.coe](./full_colour/gradient.coe), and a program for generating the COE file can be found in [gradient.c](./full_colour/gradient.c).
+The [full_colour](./full_colour) project takes advantage of the 4096-bit colour output of the Arcade MegaWing. Like the _Bitmap Display_ project, it draws a small sprite from Block RAM. However, there are two changes to how the sprite is drawn. The first is that the data is stored per-pixel, rather than per-row. The second is that each pixel contains 12 bits of colour data (4 bits per channel). The image to be drawn is in [gradient.coe](./full_colour/gradient.coe), and a program for generating the COE file can be found in [gradient.c](./full_colour/gradient.c).
 
-The sprite also bounces around the screen, much like the DVD logo did on DVD players:
+To make things more interesting, the image is drawn twice, resulting in two separate sprites that bounce around the screen:
 
 [![Full Colour](./content/full_colour_small.jpg)](./content/full_colour.jpg)
+
+This was achieved by converting the single port ROM into a dual port ROM, allowing two memory locations to be read on each clock cycle.
 
 ## References
 

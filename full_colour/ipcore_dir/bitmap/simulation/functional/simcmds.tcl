@@ -56,5 +56,8 @@ wave add /bitmap_tb/status
       wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/CLKA
       wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/ADDRA
       wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/DOUTA
+      wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/CLKB
+      wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/ADDRB
+      wave add  /bitmap_tb/bitmap_synth_inst/BMG_PORT/DOUTB
 run all
 quit

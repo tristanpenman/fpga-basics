@@ -1,8 +1,10 @@
  
  
+ 
+ 
     --------------------------------------------------------------------------------
 --
--- BLK MEM GEN v7_3 Core - Stimulus Generator For Single Port ROM
+-- BLK MEM GEN v7_3 Core - Stimulus Generator For Single Port DROM
 --
 --------------------------------------------------------------------------------
 --
@@ -57,7 +59,7 @@
 -- Filename: bmg_stim_gen.vhd
 --
 -- Description:
---  Stimulus Generation For SROM
+--  Stimulus Generation For DROM
 --
 --------------------------------------------------------------------------------
 -- Author: IP Solutions Division
@@ -73,30 +75,31 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 USE IEEE.STD_LOGIC_MISC.ALL;
+use IEEE.numeric_std.all;
 
  LIBRARY work;
 USE work.ALL;
 USE work.BMG_TB_PKG.ALL;
 
 
-ENTITY REGISTER_LOGIC_SROM IS
+ENTITY REGISTER_LOGIC_DROM IS
   PORT(
     Q   : OUT STD_LOGIC;
     CLK   : IN STD_LOGIC;
     RST : IN STD_LOGIC;
     D   : IN STD_LOGIC
     );
-END REGISTER_LOGIC_SROM;
+END REGISTER_LOGIC_DROM;
 
-ARCHITECTURE REGISTER_ARCH OF REGISTER_LOGIC_SROM IS
+ARCHITECTURE REGISTER_ARCH OF REGISTER_LOGIC_DROM IS
    SIGNAL Q_O : STD_LOGIC :='0';
 BEGIN
   Q <= Q_O;
-FF_BEH: PROCESS(CLK)
+  FF_BEH: PROCESS(CLK)
 BEGIN
    IF(RISING_EDGE(CLK)) THEN
-      IF(RST /= '0' ) THEN
-	Q_O <= '0';
+      IF(RST /='0') THEN
+     	Q_O <= '0';
      ELSE
         Q_O <= D;
       END IF;
@@ -123,14 +126,16 @@ ENTITY BMG_STIM_GEN IS
       GENERIC ( C_ROM_SYNTH : INTEGER := 0
       );
       PORT (
-            CLK : IN STD_LOGIC;
-            RST : IN STD_LOGIC;
+            CLKA : IN STD_LOGIC;
+            CLKB : IN STD_LOGIC;
+            TB_RST : IN STD_LOGIC;
             ADDRA: OUT  STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0'); 
-            DATA_IN : IN STD_LOGIC_VECTOR (11 DOWNTO 0);   --OUTPUT VECTOR         
-            STATUS : OUT STD_LOGIC:= '0'
+            ADDRB: OUT  STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0'); 
+            DATA_IN_A : IN STD_LOGIC_VECTOR (11 DOWNTO 0);   --OUTPUT VECTOR         
+            DATA_IN_B : IN STD_LOGIC_VECTOR (11 DOWNTO 0);   --OUTPUT VECTOR         
+            STATUS : OUT STD_LOGIC_VECTOR(1 DOWNTO 0):= (OTHERS =>'0')
     	  );
 END BMG_STIM_GEN;
-
 
 ARCHITECTURE BEHAVIORAL OF BMG_STIM_GEN IS
 
@@ -169,22 +174,36 @@ ARCHITECTURE BEHAVIORAL OF BMG_STIM_GEN IS
 
 CONSTANT ZERO : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
 SIGNAL READ_ADDR_INT : STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
+SIGNAL READ_ADDR_INT_B : STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
 SIGNAL READ_ADDR : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
+SIGNAL READ_ADDR_B : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
 SIGNAL CHECK_READ_ADDR : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
+SIGNAL CHECK_READ_ADDR_B : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
 SIGNAL EXPECTED_DATA : STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
+SIGNAL EXPECTED_DATA_B : STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0');
 SIGNAL DO_READ : STD_LOGIC := '0';
+SIGNAL DO_READ_B : STD_LOGIC := '0';
+SIGNAL DO_READ_R : STD_LOGIC := '0';
+SIGNAL DO_READ_B_R : STD_LOGIC := '0';
 SIGNAL CHECK_DATA : STD_LOGIC := '0';
+SIGNAL CHECK_DATA_B : STD_LOGIC := '0';
 SIGNAL CHECK_DATA_R : STD_LOGIC := '0';
 SIGNAL CHECK_DATA_2R : STD_LOGIC := '0';
+SIGNAL CHECK_DATA_B_R : STD_LOGIC := '0';
+SIGNAL CHECK_DATA_B_2R : STD_LOGIC := '0';
 SIGNAL DO_READ_REG: STD_LOGIC_VECTOR(4 DOWNTO 0) :=(OTHERS => '0');
+SIGNAL DO_READ_REG_B: STD_LOGIC_VECTOR(4 DOWNTO 0) :=(OTHERS => '0');
 CONSTANT DEFAULT_DATA  : STD_LOGIC_VECTOR(11 DOWNTO 0):= hex_to_std_logic_vector("0",12);
+signal k :integer :=0;
+
 
 BEGIN
 
 
-SYNTH_COE:  IF(C_ROM_SYNTH =0 ) GENERATE
+SIM_COE:  IF(C_ROM_SYNTH =0 ) GENERATE
 
 type mem_type is array (4095 downto 0) of std_logic_vector(11 downto 0);
+CONSTANT RATIO : integer := DIVROUNDUP(12,12);
 
   FUNCTION bit_to_sl(input: BIT) RETURN STD_LOGIC IS
     VARIABLE temp_return : STD_LOGIC;
@@ -242,6 +261,7 @@ impure FUNCTION init_memory( C_USE_DEFAULT_DATA : INTEGER;
   VARIABLE j             : INTEGER;
   BEGIN
 
+
     --Display output message indicating that the behavioral model is being
     --initialized
     ASSERT (NOT (C_USE_DEFAULT_DATA=1 OR C_LOAD_INIT_FILE=1)) REPORT " Block Memory Generator CORE Generator module loading initial data..." SEVERITY NOTE;
@@ -277,7 +297,6 @@ impure FUNCTION init_memory( C_USE_DEFAULT_DATA : INTEGER;
       file_close(init_file);
     END IF;
     RETURN init_return;
-
   END FUNCTION;
 
 
@@ -288,10 +307,9 @@ impure FUNCTION init_memory( C_USE_DEFAULT_DATA : INTEGER;
 constant c_init : mem_type := init_memory(0,
                                           1,
 										  "bitmap.mif",
-                                           DEFAULT_DATA,
+                                          DEFAULT_DATA,
                                           12,
                                           4096);
-
 
 constant rom : mem_type := c_init;
 BEGIN
@@ -299,43 +317,89 @@ BEGIN
  EXPECTED_DATA <= rom(conv_integer(unsigned(check_read_addr)));
 
   CHECKER_RD_ADDR_GEN_INST:ENTITY work.ADDR_GEN
-    GENERIC MAP( C_MAX_DEPTH =>4096 )
+    GENERIC MAP( C_MAX_DEPTH => 4096 )
 
      PORT MAP(
-        CLK => CLK,
-     	RST => RST,
+        CLK => CLKA,
+     	RST => TB_RST,
    	    EN  => CHECK_DATA_2R,
         LOAD => '0',
-     	LOAD_VALUE => ZERO,
+     	LOAD_VALUE => zero,
     	ADDR_OUT => CHECK_READ_ADDR
        );
- 
 
-  PROCESS(CLK)
+
+
+  CHECKER_RD_ADDRB_GEN_INST:ENTITY work.ADDR_GEN
+    GENERIC MAP( C_MAX_DEPTH => 4096 )
+
+     PORT MAP(
+        CLK => CLKB,
+     	RST => TB_RST,
+   	    EN  => CHECK_DATA_B_2R,
+        LOAD => '0',
+     	LOAD_VALUE => ZERO,
+    	ADDR_OUT => CHECK_READ_ADDR_B
+       );
+
+  PROCESS(CLKA)
    BEGIN
-     IF(RISING_EDGE(CLK)) THEN
+     IF(RISING_EDGE(CLKA)) THEN
        IF(CHECK_DATA_2R ='1') THEN
-    	 IF(EXPECTED_DATA = DATA_IN) THEN
-	        STATUS<='0';
+    	 IF(EXPECTED_DATA = DATA_IN_A) THEN
+	        STATUS(0)<='0';
     	 ELSE
-	        STATUS <= '1';
+	        STATUS(0) <= '1';
      	 END IF;
        END IF;
 	 END IF;
   END PROCESS;
-END GENERATE; 
--- Simulatable ROM 
 
---Synthesizable ROM
-SYNTH_CHECKER: IF(C_ROM_SYNTH = 1) GENERATE
-  PROCESS(CLK)
+ EXPECTED_DATA_B <= rom(conv_integer(unsigned(check_read_addr_b)));
+  PROCESS(CLKB)
+   BEGIN
+     IF(RISING_EDGE(CLKB)) THEN
+       IF(CHECK_DATA_B_2R='1') THEN
+    	 IF(EXPECTED_DATA_B = DATA_IN_B) THEN
+	        STATUS(1)<='0';
+    	 ELSE
+	        STATUS(1) <= '1';
+     	 END IF;
+       END IF;
+	 END IF;
+  END PROCESS;
+
+
+
+
+END GENERATE;
+
+SYNTH_CHECKER_A: IF(C_ROM_SYNTH = 1) GENERATE
+  PROCESS(CLKA)
   BEGIN
-     IF(RISING_EDGE(CLK)) THEN
+     IF(RISING_EDGE(CLKA)) THEN
 	   IF(CHECK_DATA_2R='1') THEN
-		 IF(DATA_IN=DEFAULT_DATA) THEN
-		   STATUS <= '0';
+		 IF(DATA_IN_A=DEFAULT_DATA) THEN
+		   STATUS(0) <= '0';
 	     ELSE
-		   STATUS <= '1';
+		   STATUS(0) <= '1';
+		 END IF;
+	   END IF;
+	 END IF;
+  END PROCESS;
+
+END GENERATE;
+
+SYNTH_CHECKER_B: IF(C_ROM_SYNTH=1) GENERATE
+
+  PROCESS(CLKB)
+  BEGIN
+     IF(RISING_EDGE(CLKB)) THEN
+	   IF(CHECK_DATA_B_2R='1') THEN
+		 IF(DATA_IN_B = DEFAULT_DATA) THEN
+		   STATUS(1) <= '0';
+	     ELSE
+		   STATUS(1) <= '1';
 		 END IF;
 	   END IF;
 	 END IF;
@@ -345,10 +409,15 @@ END GENERATE;
 
 
     READ_ADDR_INT(11 DOWNTO 0) <= READ_ADDR(11 DOWNTO 0);
+    READ_ADDR_INT_B(11 DOWNTO 0) <= READ_ADDR_B(11 DOWNTO 0);
     ADDRA <= READ_ADDR_INT ;
+    ADDRB <= READ_ADDR_INT_B ;
 
+   
    CHECK_DATA <= DO_READ;
 
+   
+   CHECK_DATA_B <= DO_READ_B;
 
 
 
@@ -356,21 +425,45 @@ END GENERATE;
     GENERIC MAP( C_MAX_DEPTH => 4096 )
 
      PORT MAP(
-        CLK => CLK,
-     	RST => RST,
+        CLK => CLKA,
+     	RST => TB_RST,
    	    EN  => DO_READ,
         LOAD => '0',
      	LOAD_VALUE => ZERO,
     	ADDR_OUT => READ_ADDR
        );
 
-RD_PROCESS: PROCESS (CLK)
+
+  RD_ADDR_B_GEN_INST:ENTITY work.ADDR_GEN
+    GENERIC MAP( C_MAX_DEPTH => 4096 )
+
+     PORT MAP(
+        CLK => CLKB,
+     	RST => TB_RST,
+   	    EN  => DO_READ_B,
+        LOAD => '0',
+     	LOAD_VALUE => ZERO,
+    	ADDR_OUT => READ_ADDR_B
+       );
+
+RD_PROCESS_A: PROCESS (CLKA)
        BEGIN
-     IF (RISING_EDGE(CLK)) THEN
-          IF(RST='1') THEN
+     IF (RISING_EDGE(CLKA)) THEN
+          IF(TB_RST='1') THEN
     	     DO_READ <= '0';
 		  ELSE
              DO_READ <= '1';
+	    END IF;
+	 END IF;
+END PROCESS;
+
+RD_PROCESS_B: PROCESS (CLKB)
+       BEGIN
+     IF (RISING_EDGE(CLKB)) THEN
+          IF(TB_RST='1') THEN
+    	     DO_READ_B <= '0';
+		  ELSE
+             DO_READ_B <= '1';
 	    END IF;
 	 END IF;
 END PROCESS;
@@ -379,42 +472,88 @@ END PROCESS;
   BEGIN
     DFF_RIGHT: IF I=0 GENERATE
      BEGIN
-     SHIFT_INST_0: ENTITY work.REGISTER_LOGIC_SROM
+     SHIFT_INST_0: ENTITY work.REGISTER_LOGIC_DROM
         PORT MAP(
                  Q  => DO_READ_REG(0),
-                 CLK =>CLK,
-                 RST=>RST,
+                 CLK =>CLKA,
+                 RST=>TB_RST,
                  D  =>DO_READ
                 );
      END GENERATE DFF_RIGHT;
     DFF_OTHERS: IF ((I>0) AND (I<=4)) GENERATE
      BEGIN
-       SHIFT_INST: ENTITY work.REGISTER_LOGIC_SROM
+       SHIFT_INST: ENTITY work.REGISTER_LOGIC_DROM
          PORT MAP(
                  Q  => DO_READ_REG(I),
-                 CLK =>CLK,
-                 RST=>RST,
+                 CLK =>CLKA,
+                 RST=>TB_RST,
                  D  =>DO_READ_REG(I-1)
                 );
       END GENERATE DFF_OTHERS;
    END GENERATE BEGIN_SHIFT_REG;
 
+  BEGIN_SHIFT_REG_B: FOR I IN 0 TO 4 GENERATE
+  BEGIN
+    DFF_RIGHT_B: IF I=0 GENERATE
+     BEGIN
+     SHIFT_INST_B_0: ENTITY work.REGISTER_LOGIC_DROM
+        PORT MAP(
+                 Q  => DO_READ_REG_B(0),
+                 CLK =>CLKB,
+                 RST=>TB_RST,
+                 D  =>DO_READ_B
+                );
+     END GENERATE DFF_RIGHT_B;
+    DFF_B_OTHERS: IF ((I>0) AND (I<=4)) GENERATE
+     BEGIN
+       SHIFT_INST_B: ENTITY work.REGISTER_LOGIC_DROM
+         PORT MAP(
+                 Q  => DO_READ_REG_B(I),
+                 CLK =>CLKB,
+                 RST=>TB_RST,
+                 D  =>DO_READ_REG_B(I-1)
+                );
+      END GENERATE DFF_B_OTHERS;
+   END GENERATE BEGIN_SHIFT_REG_B;
 
-CHECK_DATA_REG_1: ENTITY work.REGISTER_LOGIC_SROM
+
+CHECK_DATA_REG_B: ENTITY work.REGISTER_LOGIC_DROM
+        PORT MAP(
+                 Q  => CHECK_DATA_B_R,
+                 CLK =>CLKB,
+                 RST=>TB_RST,
+                 D  =>CHECK_DATA_B
+                );
+
+CHECK_DATA_REG: ENTITY work.REGISTER_LOGIC_DROM
+        PORT MAP(
+                 Q  => CHECK_DATA_R,
+                 CLK =>CLKA,
+                 RST=>TB_RST,
+                 D  =>CHECK_DATA
+                );
+
+CHECK_DATA_REG_B_R: ENTITY work.REGISTER_LOGIC_DROM
+        PORT MAP(
+                 Q  => CHECK_DATA_B_2R,
+                 CLK =>CLKB,
+                 RST=>TB_RST,
+                 D  =>CHECK_DATA_B_R
+                );
+
+CHECK_DATA_REG_R: ENTITY work.REGISTER_LOGIC_DROM
         PORT MAP(
                  Q  => CHECK_DATA_2R,
-                 CLK =>CLK,
-                 RST=>RST,
+                 CLK =>CLKA,
+                 RST=>TB_RST,
                  D  =>CHECK_DATA_R
                 );
 
-CHECK_DATA_REG: ENTITY work.REGISTER_LOGIC_SROM
-        PORT MAP(
-                 Q  => CHECK_DATA_R,
-                 CLK =>CLK,
-                 RST=>RST,
-                 D  =>CHECK_DATA
-                );
+
+
+
+
+ 
 
 
 

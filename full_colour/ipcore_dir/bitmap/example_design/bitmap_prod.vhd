@@ -81,7 +81,7 @@
 --    C_AXI_TYPE                  :  1 
 --    C_AXI_SLAVE_TYPE            :  0 
 --    C_AXI_ID_WIDTH              :  4 
---    C_MEM_TYPE                  :  3 
+--    C_MEM_TYPE                  :  4 
 --    C_BYTE_SIZE                 :  9 
 --    C_ALGORITHM                 :  1 
 --    C_PRIM_TYPE                 :  1 
@@ -235,8 +235,14 @@ ARCHITECTURE xilinx OF bitmap_prod IS
   
     DOUTA          : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
 
-    CLKA       : IN STD_LOGIC
+  
+    CLKA       : IN STD_LOGIC;
 
+  
+      --Port B
+    ADDRB          : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
+    DOUTB          : OUT STD_LOGIC_VECTOR(11 DOWNTO 0);
+    CLKB           : IN STD_LOGIC
 
 
 
@@ -252,7 +258,12 @@ BEGIN
   
       DOUTA      => DOUTA,
 
-      CLKA       => CLKA
+      CLKA       => CLKA,
+  
+      --Port B
+      ADDRB      => ADDRB,
+      DOUTB      => DOUTB,
+      CLKB       => CLKB
 
 
 
