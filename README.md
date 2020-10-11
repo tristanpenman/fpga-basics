@@ -74,7 +74,7 @@ Input/output pins were be updated to match the new wing, and wiring for a ground
 
 ## Bitmap Display ##
 
-This example builds on _Simple VGA_ by allowing a small bitmap/sprite to be drawn from Block RAM. The image to be drawn is in [dither.coe](./bitmap_display/dither.coe), and a program for generating the COE file can be found in [dither.c](./bitmap_display/dither.c).
+[bitmap_display](./bitmap_display) builds on _Simple VGA_ by allowing a small bitmap/sprite to be drawn from Block RAM. The image to be drawn is in [dither.coe](./bitmap_display/dither.coe), and a program for generating the COE file can be found in [dither.c](./bitmap_display/dither.c).
 
 It's difficult to tell from the photo that this is a pure bitmap image (i.e. ones and zeros), so the darker triangles are actually dithered:
 
@@ -83,6 +83,14 @@ It's difficult to tell from the photo that this is a pure bitmap image (i.e. one
 This turned out to be more sensitive to timing than I expected. The bitmap is read from Block RAM one row at a time, and it was necessary to update the read address earlier enough to ensure that the output would be available in time to be drawn. Failing to do this caused pixel alignment issues.
 
 The next challenge is full colour support...
+
+## Full Colour ##
+
+The [full_colour](./full_colour) project takes advantage of the 4096-bit colour output of the Arcade MegaWing. Like the _Bitmap Display_ project, it draws a small sprite from Block RAM. However, there are two changes to how it is drawn. The first is that the data is stored per-pixel, rather than per-row. The second is that each pixel contains 12 bits of colour data (4 bits per channel). The image to be drawn is in [gradient.coe](./full_colour/gradient.coe), and a program for generating the COE file can be found in [gradient.c](./full_colour/gradient.c).
+
+The sprite also bounces around the screen, much like the DVD logo did on DVD players:
+
+[![Full Colour](./content/full_colour_small.jpg)](./content/full_colour.jpg)
 
 ## References
 
