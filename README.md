@@ -96,7 +96,7 @@ This was achieved by converting the single port ROM into a dual port ROM, allowi
 
 ## RS-232 Receiver
 
-The [rs232_receiver] project is based on Hamster's response in [this post](http://forum.gadgetfactory.net/topic/1823-usb-specifics-for-the-pro/) on the [Gadget Factory Forum](http://forum.gadgetfactory.net/). It allows the LEDs on the LogicStart MegaWing to be controlled via the USB serial interface, using the RS-232 protocol. A simple oversampling approach is used to handle incoming data.
+The [rs232_receiver](./rs232_receiver) project is based on Hamster's response in [this post](http://forum.gadgetfactory.net/topic/1823-usb-specifics-for-the-pro/) on the [Gadget Factory Forum](http://forum.gadgetfactory.net/). It allows the LEDs on the LogicStart MegaWing to be controlled via the USB serial interface, using the RS-232 protocol. A simple oversampling approach is used to handle incoming data.
 
 On my Linux machine, I was able to connect to the device `/dev/ttyUSB1` with both `minicom` and `screen`, using a baud rate of 9600. Any keyboard input is sent to the FPGA, and used to control LEDs.
 
