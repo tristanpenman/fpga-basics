@@ -18,7 +18,7 @@ Although a video might be more helpful, here is a photo of _Segment Counter_:
 
 [![Photo of Segment Counter](./content/segment_counter_small.jpg)](./content/segment_counter.jpg)
 
-Note that the order of the LEDs is backwards from this perspective. 
+Note that the order of the LEDs is backwards from this perspective.
 
 ## Segment Counter with Input
 
@@ -60,7 +60,7 @@ The volume can be controlled using the joystick on the MegaWing, and is displaye
 
 ## Volume Control 16
 
-[volume_control_16](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c). 
+[volume_control_16](./volume_control_16) is a simple iteration on _Volume Control_ that uses a 16-bit DAC instead of an 8-bit DAC. The code for generating a COE file has been updated accordingly, in [sine16.c](./volume_control_16/sine16.c).
 
 ## Gamepad Test
 
@@ -72,7 +72,7 @@ Here it is in action:
 
 Input/output pins were be updated to match the new wing, and wiring for a ground pin was added for the controller.
 
-## Bitmap Display ##
+## Bitmap Display
 
 [bitmap_display](./bitmap_display) builds on _Simple VGA_ by allowing a small bitmap/sprite to be drawn from Block RAM. The image to be drawn is in [dither.coe](./bitmap_display/dither.coe), and a program for generating the COE file can be found in [dither.c](./bitmap_display/dither.c).
 
@@ -84,7 +84,7 @@ This turned out to be more sensitive to timing than I expected. The bitmap is re
 
 The next challenge is full colour support...
 
-## Full Colour ##
+## Full Colour
 
 The [full_colour](./full_colour) project takes advantage of the 4096-bit colour output of the Arcade MegaWing. Like the _Bitmap Display_ project, it draws a small sprite from Block RAM. However, there are two changes to how the sprite is drawn. The first is that the data is stored per-pixel, rather than per-row. The second is that each pixel contains 12 bits of colour data (4 bits per channel). The image to be drawn is in [gradient.coe](./full_colour/gradient.coe), and a program for generating the COE file can be found in [gradient.c](./full_colour/gradient.c).
 
@@ -93,6 +93,34 @@ To make things more interesting, the image is drawn twice, resulting in two sepa
 [![Full Colour](./content/full_colour_small.jpg)](./content/full_colour.jpg)
 
 This was achieved by converting the single port ROM into a dual port ROM, allowing two memory locations to be read on each clock cycle.
+
+## RS-232 Receiver
+
+The [rs232_receiver] project is based on Hamster's response in [this post](http://forum.gadgetfactory.net/topic/1823-usb-specifics-for-the-pro/) on the [Gadget Factory Forum](http://forum.gadgetfactory.net/). It allows the LEDs on the LogicStart MegaWing to be controlled via the USB serial interface, using the RS-232 protocol. A simple oversampling approach is used to handle incoming data.
+
+On my Linux machine, I was able to connect to the device `/dev/ttyUSB1` with both `minicom` and `screen`, using a baud rate of 9600. Any keyboard input is sent to the FPGA, and used to control LEDs.
+
+Using `minicom`, you will need to configure the serial port like so:
+
+    +-----------------------------------------------------------------------+
+    | A -    Serial Device      : /dev/ttyUSB1                              |
+    | B - Lockfile Location     : /var/lock                                 |
+    | C -   Callin Program      :                                           |
+    | D -  Callout Program      :                                           |
+    | E -    Bps/Par/Bits       : 9600 8N1                                  |
+    | F - Hardware Flow Control : No                                        |
+    | G - Software Flow Control : No                                        |
+    |                                                                       |
+    |    Change which setting?                                              |
+    +-----------------------------------------------------------------------+
+
+For `screen`, you can use:
+
+    screen /dev/ttyUSB1 9600
+
+You may need to run these via `sudo`.
+
+On Windows, you can use a terminal emulator such as [putty](https://www.putty.org).
 
 ## References
 
