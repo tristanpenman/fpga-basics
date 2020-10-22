@@ -122,6 +122,12 @@ You may need to run these via `sudo`.
 
 On Windows, you can use a terminal emulator such as [putty](https://www.putty.org).
 
+## RS-232 Echo
+
+The [rs232_echo](./rs232_echo) project builds on the _RS-232 Receiver_ by echoing each byte received back to the transmitter. This is implemented using a TX component that maintains a buffer containing the next byte to be sent (if any), and the current state of the transmission. The next byte to be sent is set whenever a complete byte is received by the RX component.
+
+LED feedback has been removed, since it is no longer required ;)
+
 ## References
 
 * [Free-Range VHDL](http://freerangefactory.org/pdf/df344hdh4h8kjfh3500ft2/free_range_vhdl.pdf) from [Free Range Factory](http://freerangefactory.org)
