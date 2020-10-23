@@ -4,14 +4,13 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity rs232_rx is
   generic (
-    frequency   : natural;
-    baud        : natural
+    frequency : natural;
+    baud      : natural
   );
   port (
-    clk         : in  STD_LOGIC;
-    rx          : in  STD_LOGIC;
-    data        : out STD_LOGIC_VECTOR(7 downto 0);
-    data_strobe : out STD_LOGIC
+    clk  : in  STD_LOGIC;
+    rx   : in  STD_LOGIC;
+    data : out STD_LOGIC_VECTOR(7 downto 0)
   );
 end rs232_rx;
 
@@ -23,11 +22,8 @@ begin
   process(clk)
   begin
     if rising_edge(clk) then
-      data_strobe <= '0';
-
       if baud_x4 = 0 then
         if oversampled_bits(39 downto 37) = "000" then
-          data_strobe <= '1';
           data <= oversampled_bits(34) & oversampled_bits(30)
                 & oversampled_bits(26) & oversampled_bits(22)
                 & oversampled_bits(18) & oversampled_bits(14)

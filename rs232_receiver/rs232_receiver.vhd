@@ -19,8 +19,7 @@ architecture Behavioral of rs232_receiver is
     port (
       clk         : in  STD_LOGIC;
       rx          : in  STD_LOGIC;
-      data        : out STD_LOGIC_VECTOR(7 downto 0);
-      data_strobe : out STD_LOGIC
+      data        : out STD_LOGIC_VECTOR(7 downto 0)
     );
   end component;
 
@@ -34,8 +33,7 @@ begin
     port map (
       clk => CLK,
       rx => RX,
-      data => LED,
-      data_strobe => open
+      data => LED
     );
 
 end Behavioral;
