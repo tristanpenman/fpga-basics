@@ -17,10 +17,11 @@ entity rs232_tx is
 end rs232_tx;
 
 architecture Behavioral of rs232_tx is
-  signal buff      : STD_LOGIC_VECTOR(7 downto 0) := (others => '1');
-  signal counter   : STD_LOGIC_VECTOR(12 downto 0) := (others => '0');
-  signal sent      : STD_LOGIC_VECTOR(4 downto 0) := (others => '0');
-  signal shiftreg  : STD_LOGIC_VECTOR(15 downto 0) := (others => '1');
+  signal available : STD_LOGIC := '0';
+  signal buff      : STD_LOGIC_VECTOR(7 downto 0)  := (others => '1');
+  signal counter   : STD_LOGIC_VECTOR(11 downto 0) := (others => '0');
+  signal sent      : STD_LOGIC_VECTOR(3 downto 0)  := (others => '0');
+  signal shiftreg  : STD_LOGIC_VECTOR(8 downto 0)  := (others => '1');
 begin
 
   tx <= shiftreg(0);
@@ -29,23 +30,24 @@ begin
   begin
     if rising_edge(clk) then
       if set = '1' then
+        available <= '1';
         buff <= data;
       end if;
 
       if counter = 3332 then
         counter <= (others => '0');
-        if sent = 16 then
-          if buff = "11111111" then
+        if sent = 15 then
+          if available = '0' then
             -- keep sending ones to indicate that no input is available
             shiftreg <= (others => '1');
           else
             -- echo the byte back
-            shiftreg <= "1111111" & buff & "0";
+            shiftreg <= buff & "0";
           end if;
-          buff <= (others => '1');
+          available <= '0';
           sent <= (others => '0');
         else
-          shiftreg <= '1' & shiftreg(15 downto 1);
+          shiftreg <= '1' & shiftreg(8 downto 1);
           sent <= sent + 1;
         end if;
       else
